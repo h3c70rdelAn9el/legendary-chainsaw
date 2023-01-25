@@ -12,10 +12,18 @@ const style = {
 
 const Todo = ({ todo }) => {
     return (
-        <li className={style.li}>
+        <li className={todo.completed ? style.liCompleted : style.li}>
             <div className={style.row}>
-                <input type="checkbox" />
-                <p className={style.text}>{todo.text}</p>
+                <input
+                    type="checkbox"
+                    checked={todo.completed ? 'checked' : ''}
+                />
+                <p
+                    className={
+                        todo.completed ? style.textCompleted : style.text
+                    }>
+                    {todo.text}
+                </p>
             </div>
             <button>
                 <FaRegTrashAlt />
