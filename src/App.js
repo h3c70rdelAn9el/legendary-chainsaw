@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { AiOutlinePlus } from 'react-icons/ai'
 import Todo from './Todo'
 import { db } from './firebase'
-import { collection, query, onSnapshot } from 'firebase/firestore'
+import {
+    collection,
+    query,
+    onSnapshot,
+    updateDoc,
+    doc,
+} from 'firebase/firestore'
 
 const style = {
     bg: `h-screen w-full bg-gradient-to-br from-gray-400 to to-blue-800`,
@@ -36,6 +42,12 @@ function App() {
         return unsubscribe
     }, [])
 
+    const toggleCompleted = async (todo) => {
+        await updateDoc(doc(db, 'todos', todo.id), {
+            completed: !todo.completed,
+        })
+    }
+
     return (
         <div className={style.bg}>
             <div className={style.container}>
@@ -53,7 +65,11 @@ function App() {
 
                 <ul>
                     {todos.map((todo, index) => (
-                        <Todo key={index} todo={todo} />
+                        <Todo
+                            key={index}
+                            todo={todo}
+                            toggleCompleted={toggleCompleted}
+                        />
                     ))}
                     {/* <Todo /> */}
                 </ul>
