@@ -8,6 +8,7 @@ import {
     onSnapshot,
     updateDoc,
     doc,
+    addDoc,
 } from 'firebase/firestore'
 
 const style = {
@@ -20,16 +21,24 @@ const style = {
     count: `text-center text-gray-800`,
 }
 
-// create todo
-// read todo
-
-// update todo
-
-// read todo
-
 function App() {
     const [todos, setTodos] = useState([])
+    const [input, setInput] = useState('')
+    // add todo
+    const addTodo = async (e) => {
+        e.preventDefault()
+        if (input === '') {
+            alert('Please enter a valid todo')
+            return
+        }
+        await addDoc(collection(db, 'todos'), {
+            text: input,
+            completed: false,
+        })
+        setInput('')
+    }
 
+    // get todos
     useEffect(() => {
         const q = query(collection(db, 'todos'))
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -42,6 +51,7 @@ function App() {
         return unsubscribe
     }, [])
 
+    // update todo
     const toggleCompleted = async (todo) => {
         await updateDoc(doc(db, 'todos', todo.id), {
             completed: !todo.completed,
@@ -52,8 +62,10 @@ function App() {
         <div className={style.bg}>
             <div className={style.container}>
                 <h2 className={style.heading}>Todo</h2>
-                <form className={style.form}>
+                <form onSubmit={addTodo} className={style.form}>
                     <input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
                         className={style.input}
                         type="text"
                         placeholder="Add a todo"
