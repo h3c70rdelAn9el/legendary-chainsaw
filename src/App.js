@@ -9,6 +9,7 @@ import {
     updateDoc,
     doc,
     addDoc,
+    deleteDoc,
 } from 'firebase/firestore'
 
 const style = {
@@ -58,6 +59,11 @@ function App() {
         })
     }
 
+    // delete todo
+    const deleteTodo = async (id) => {
+        await deleteDoc(doc(db, 'todos', id))
+    }
+
     return (
         <div className={style.bg}>
             <div className={style.container}>
@@ -81,11 +87,17 @@ function App() {
                             key={index}
                             todo={todo}
                             toggleCompleted={toggleCompleted}
+                            deleteTodo={deleteTodo}
                         />
                     ))}
                     {/* <Todo /> */}
                 </ul>
-                <p className={style.count}>You have two todos</p>
+
+                {todos.length === 0 ? null : (
+                    <p className={style.count}>
+                        {`Total todos: ${todos.length}`}
+                    </p>
+                )}
             </div>
         </div>
     )
